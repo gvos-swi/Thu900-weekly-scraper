@@ -1,5 +1,6 @@
 sender = "thu900hockey@gmail.com"
 receiver = "thu900hockey@gmail.com"
+#password = os.environ.get('EMAIL_PASSWORD')
 password = "vbhv temd uodi mykr"  # Use app-specific password
 url = "https://gamelogin.com/thu900"
 

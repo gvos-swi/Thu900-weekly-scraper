@@ -31,4 +31,4 @@ jobs:
         # EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
       run: |
-        python scraper.py
+        python Webscrape.py

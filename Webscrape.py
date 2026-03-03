@@ -27,17 +27,21 @@ def scrape_player_list(url):
             # Get the page content
             player_data = page.inner_text('body')
             
-            # Extract content between "Home    Away" and "Future Games"
-            start_marker = "Home\tAway"  # Tab character between Home and Away
+            # Extract content between "Home / Away" and "Future Games"
+            start_marker1 = "Home\tAway"  # Tab character between Home and Away
+            start_marker2 = "Players Logged In"  # Alternative marker if the first one is not found"
             end_marker = "Future Games"
             
-            start_idx = player_data.find(start_marker)
+            start_idx1 = player_data.find(start_marker1)
+            start_idx2 = player_data.find(start_marker2)    
             end_idx = player_data.find(end_marker)
             
-            if start_idx != -1 and end_idx != -1:
-                player_data = player_data[start_idx + len(start_marker):end_idx]
-            elif start_idx != -1:
-                player_data = player_data[start_idx + len(start_marker):]
+            if start_idx1 != -1 and end_idx != -1:
+                player_data = player_data[start_idx1 + len(start_marker1):end_idx]
+            elif start_idx2 != -1 and end_idx != -1:
+                player_data = player_data[start_idx2 + 9 + len(start_marker2):end_idx]
+            else:
+                player_data = "Could not find text indicators to extract player names" 
             
             # Split into lines and clean
             lines = player_data.split('\n')

@@ -8,6 +8,7 @@ on:
     - cron: '*/10 * * * *' 
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
+# added a comment here to test commit changes
 jobs:
   scrape:
     runs-on: ubuntu-latest

@@ -1,7 +1,5 @@
 sender = "thu900hockey@gmail.com"
 receiver = "thu900hockey@gmail.com"
-#password = os.environ.get('EMAIL_PASSWORD')
-password = "vbhv temd uodi mykr"  # Use app-specific password
 url = "https://gamelogin.com/thu900"
 
 from playwright.sync_api import sync_playwright
@@ -10,6 +8,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 import os
+
+password = os.environ.get('EMAIL_PASSWORD')
 
 def scrape_player_list(url):
     try:

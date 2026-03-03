@@ -82,10 +82,10 @@ def send_email(content, subject="Thu900 Player List"):
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = receiver
-    msg['Subject'] = f"{subject} - {datetime.now().strftime('%Y-%m-%d')}"
+    msg['Subject'] = f"{subject} - {pst_time.strftime('%Y-%m-%d %I:%M %p PST')}"
     
     body = f"Player List for Thu900\n"
-    body += f"Scraped on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    body += f"Scraped on: {pst_time.strftime('%Y-%m-%d %I:%M:%S %p PST')}\n"
     body += "="*50 + "\n\n"
     body += content
     

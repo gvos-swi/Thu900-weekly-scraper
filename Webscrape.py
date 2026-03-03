@@ -7,9 +7,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import os
 
-password = os.environ.get('EMAIL_PASSWORD')
 
 def scrape_player_list(url):
     try:
@@ -79,6 +79,11 @@ def scrape_player_list(url):
         return f"Error scraping: {str(e)}"
 
 def send_email(content, subject="Thu900 Player List"):
+    # Get current time in PST
+    pst_time = datetime.now(ZoneInfo('America/Los_Angeles'))
+
+    password = os.environ.get('EMAIL_PASSWORD')
+
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = receiver

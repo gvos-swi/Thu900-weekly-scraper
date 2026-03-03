@@ -3,7 +3,9 @@ name: Weekly Player List Scraper
 on:
   schedule:
     # Every Day 4:07 AM UTC - which is 8:07 PM PST    
-    - cron: '7 4 * * *' 
+    #- cron: '7 4 * * *' 
+        # TEST - runs at 4:47 PM PST today
+    - cron: '47 0 * * *' 
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:

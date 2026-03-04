@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
-
+import re
 
 def scrape_player_list(url):
     try:
@@ -27,19 +27,23 @@ def scrape_player_list(url):
             # Get the page content
             player_data = page.inner_text('body')
             
-            # Extract content between "Home / Away" and "Future Games"
-            start_marker1 = "Home\tAway"  # Tab character between Home and Away
-            start_marker2 = "Players Logged In"  # Alternative marker if the first one is not found"
+            # Extract content between "Home / Away" or "Players Logged In" and "Future Games"
+            start_marker_teams = "Home\tAway"  # Tab character between Home and Away
+            start_marker_noteams = "Players Logged In"  # when teams are not set
             end_marker = "Future Games"
             
-            start_idx1 = player_data.find(start_marker1)
-            start_idx2 = player_data.find(start_marker2)    
             end_idx = player_data.find(end_marker)
-            
-            if start_idx1 != -1 and end_idx != -1:
-                player_data = player_data[start_idx1 + len(start_marker1):end_idx]
-            elif start_idx2 != -1 and end_idx != -1:
-                player_data = player_data[start_idx2 + 9 + len(start_marker2):end_idx]
+            start_idx_teams = player_data.find(start_marker_teams)
+            start_idx_noteams = player_data.find(start_marker_noteams)
+
+            teams_set = False
+            if end_idx == -1:
+                player_data = "Could not find text indicators to extract player names" 
+            elif start_idx_teams != -1:  # teams set
+                teams_set = True
+                player_data = player_data[start_idx_teams + len(start_marker_teams):end_idx]
+            elif start_idx_noteams != -1:  # teams not set
+                player_data = player_data[start_idx_noteams + len(start_marker_noteams):end_idx]
             else:
                 player_data = "Could not find text indicators to extract player names" 
             
@@ -48,29 +52,36 @@ def scrape_player_list(url):
             cleaned_lines = []
             for line in lines:
                 stripped = line.strip()
-                if stripped and not stripped.isdigit():
+                # Skip blank lines, digit-only lines, and "Max 22" style lines
+                if stripped and not stripped.isdigit() and not re.match(r'^Max\s+\d+$', stripped):
                     cleaned_lines.append(stripped)
             
-            # Separate home and away players (alternating)
-            home_players = []
-            away_players = []
-            
-            is_home = True
-            for line in cleaned_lines:
-                if is_home:
-                    home_players.append(line)
-                else:
-                    away_players.append(line)
-                is_home = not is_home
-            
-            # Format the output
-            result = "AWAY TEAM:\n"
-            for player in away_players:
-                result += player + "\n"
-            result += "\n"
-            result += "HOME TEAM:\n"
-            for player in home_players:
-                result += player + "\n"
+            if teams_set:
+                # Separate home and away players (alternating)
+                home_players = []
+                away_players = []
+                
+                is_home = True
+                for line in cleaned_lines:
+                    if is_home:
+                        home_players.append(line)
+                    else:
+                        away_players.append(line)
+                    is_home = not is_home
+                
+                # Format the output
+                result = "AWAY TEAM:\n"
+                for player in away_players:
+                    result += player + "\n"
+                result += "\n"
+                result += "HOME TEAM:\n"
+                for player in home_players:
+                    result += player + "\n"
+            else:
+                # Just list all players without team separation
+                result = "No Teams Set\n\nPLAYERS LOGGED IN:\n"
+                for player in cleaned_lines:
+                    result += player + "\n"
             
             browser.close()
             return result

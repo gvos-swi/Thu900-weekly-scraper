@@ -69,8 +69,12 @@ def scrape_player_list(url):
                         away_players.append(line)
                     is_home = not is_home
                 
+                # Calculate total players
+                total_players = len(home_players) + len(away_players)
+                
                 # Format the output
-                result = "AWAY TEAM:\n"
+                result = f"Number of players: {total_players}\n\n"
+                result += "AWAY TEAM:\n"
                 for player in away_players:
                     result += player + "\n"
                 result += "\n"
@@ -79,7 +83,8 @@ def scrape_player_list(url):
                     result += player + "\n"
             else:
                 # Just list all players without team separation
-                result = "No Teams Set\n\nPLAYERS LOGGED IN:\n"
+                total_players = len(cleaned_lines)
+                result = f"No Teams Set\n\nNumber of players: {total_players}\n\nPLAYERS LOGGED IN:\n"
                 for player in cleaned_lines:
                     result += player + "\n"
             

@@ -84,7 +84,7 @@ def scrape_player_list(url):
             else:
                 # Just list all players without team separation
                 total_players = len(cleaned_lines)
-                result = f"No Teams Set\n\nNumber of players: {total_players}\n\nPLAYERS LOGGED IN:\n"
+                result = f"Number of players: {total_players}\nNo Teams Set\nPLAYERS LOGGED IN:\n"
                 for player in cleaned_lines:
                     result += player + "\n"
             
@@ -107,7 +107,6 @@ def send_email(content, subject="Thu900 Player List"):
     
     body = f"Player List for Thu900\n"
     body += f"Scraped on: {pst_time.strftime('%Y-%m-%d %I:%M:%S %p PST')}\n"
-    body += "="*50 + "\n\n"
     body += content
     
     msg.attach(MIMEText(body, 'plain'))

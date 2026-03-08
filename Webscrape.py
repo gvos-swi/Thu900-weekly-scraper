@@ -105,9 +105,7 @@ def send_email(content, subject="Thu900 Player List"):
     msg['To'] = receiver
     msg['Subject'] = f"{subject} - {pst_time.strftime('%Y-%m-%d %I:%M %p PST')}"
     
-    body = f"Player List for Thu900\n"
-    body += f"Scraped on: {pst_time.strftime('%Y-%m-%d %I:%M:%S %p PST')}\n"
-    body += content
+    body = content
     
     msg.attach(MIMEText(body, 'plain'))
     

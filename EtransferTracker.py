@@ -157,4 +157,4 @@ if __name__ == "__main__":
     print("\n" + report)
     
     print("\nSending email report...")
-    # send_email(report)
+    send_email(report)

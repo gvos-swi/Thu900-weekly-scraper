@@ -57,9 +57,13 @@ def read_etransfer_emails():
                 else:
                     subject += part
             
+            # Remove line breaks from subject (long subjects can have \r\n)
+            # Replace any sequence of whitespace with a single space
+            subject = re.sub(r'\s+', ' ', subject).strip()
+            
             # Check if this is an Interac e-Transfer email
             # Pattern: "Interac e-Transfer: You've received $25.00 from EVAN MORGAN and it has been automatically deposited."
-            pattern = r"Interac e-Transfer.*received \$(\d+\.\d{2}) from (.+?) and"
+            pattern = r"Interac e-Transfer.*received \$([0-9]+\.[0-9]{2}) from (.+?) and it has been"
             match = re.search(pattern, subject, re.IGNORECASE)
             
             if match:
@@ -153,4 +157,4 @@ if __name__ == "__main__":
     print("\n" + report)
     
     print("\nSending email report...")
-    send_email(report)
+    # send_email(report)

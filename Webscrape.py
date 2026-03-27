@@ -60,27 +60,50 @@ def scrape_player_list(url):
                 # Separate home and away players (alternating)
                 home_players = []
                 away_players = []
+                goalies = []
                 
                 is_home = True
                 for line in cleaned_lines:
-                    if is_home:
+                    # Check if player is a goalie
+                    if line.startswith('[G]'):
+                        goalies.append(line)
+                    elif is_home:
                         home_players.append(line)
                     else:
                         away_players.append(line)
                     is_home = not is_home
                 
                 # Calculate total players
-                total_players = len(home_players) + len(away_players)
+                total_players = len(goalies) + len(home_players) + len(away_players)
                 
-                # Format the output
+                # Format the output - Goalies, Away, Home
                 result = f"Number of players: {total_players}\n\n"
-                result += "AWAY TEAM:\n"
+                
+                # Goalies section - always 2 lines
+                result += "Goalies:\n"
+                for player in goalies:
+                    result += player + "\n"
+                # Pad with blank lines to reach 2 goalies
+                for i in range(2 - len(goalies)):
+                    result += "\n"
+                result += "\n"
+                
+                # Away team section - always 10 lines
+                result += "Away:\n"
                 for player in away_players:
                     result += player + "\n"
+                # Pad with blank lines to reach 10 players
+                for i in range(10 - len(away_players)):
+                    result += "\n"
                 result += "\n"
-                result += "HOME TEAM:\n"
+                
+                # Home team section - always 10 lines
+                result += "Home:\n"
                 for player in home_players:
                     result += player + "\n"
+                # Pad with blank lines to reach 10 players
+                for i in range(10 - len(home_players)):
+                    result += "\n"
             else:
                 # Just list all players without team separation
                 total_players = len(cleaned_lines)

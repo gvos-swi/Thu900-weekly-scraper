@@ -38,7 +38,7 @@ def scrape_player_list(url):
 
             teams_set = False
             if end_idx == -1:
-                player_data = "Could not find text indicators to extract player names" 
+                player_data = "Couldn't find text indicators to extract player names" 
             elif start_idx_teams != -1:  # teams set
                 teams_set = True
                 player_data = player_data[start_idx_teams + len(start_marker_teams):end_idx]
@@ -66,7 +66,9 @@ def scrape_player_list(url):
                 for line in cleaned_lines:
                     # Check if player is a goalie
                     if line.startswith('[G]'):
-                        goalies.append(line)
+                        # Remove [G] prefix and strip whitespace
+                        goalie_name = line.replace('[G]', '').strip()
+                        goalies.append(goalie_name)
                     elif is_home:
                         home_players.append(line)
                     else:
@@ -106,9 +108,17 @@ def scrape_player_list(url):
                     result += "\n"
             else:
                 # Just list all players without team separation
-                total_players = len(cleaned_lines)
-                result = f"Number of players: {total_players}\nNo Teams Set\nPLAYERS LOGGED IN:\n"
+                # Remove [G] prefix from goalie names
+                all_players = []
                 for player in cleaned_lines:
+                    if player.startswith('[G]'):
+                        all_players.append(player.replace('[G]', '').strip())
+                    else:
+                        all_players.append(player)
+                
+                total_players = len(all_players)
+                result = f"Number of players: {total_players}\nNo Teams Set\nPLAYERS LOGGED IN:\n"
+                for player in all_players:
                     result += player + "\n"
             
             browser.close()
@@ -143,5 +153,13 @@ def send_email(content, subject="Thu900 Player List"):
 if __name__ == "__main__":
     print(f"Scraping {url}...")
     player_list = scrape_player_list(url)
+    
+    # Print email content to command line
+    print("\n" + "="*60)
+    print("EMAIL CONTENT:")
+    print("="*60)
+    print(player_list)
+    print("="*60 + "\n")
+    
     print(f"Sending email with player list...")
     send_email(player_list)
